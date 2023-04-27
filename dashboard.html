@@ -1,0 +1,44 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="styles.css"> <!-- Link to CSS file for styling -->
+</head>
+<body>
+    <h1>Welcome <%= session.getAttribute("username") %> to the Sports Complex!</h1>
+    <div>
+    <h2>Courts List:</h2>
+    <ul>
+        <li><a href="courtDetails.html?courtName=Badminton">Badminton</a></li>
+        <li><a href="courtDetails.html?courtName=Basketball">Basketball</a></li>
+        <li><a href="courtDetails.html?courtName=Table%20Tennis">Table Tennis</a></li>
+        <!-- Add more courts as needed, each with a link to the court details page -->
+    </ul>
+    </div>
+    <div>
+    <h2>Options:</h2>
+    <ul>
+        <li><a href="Logout">Logout</a></li>
+        <li><a href="updatePassword.html">Update Password</a></li>
+        <li><a href="ReservationHistory">Reservation History</a></li>
+        <li>
+            <a href="grievance.html" class = 'not<%= session.getAttribute("is_admin") %>'>Submit Grievance</a>
+            <a href="Grievance" class = '<%= session.getAttribute("is_admin") %>'>View Grievances</a>            
+        </li>
+    </ul>
+    </div>
+    <script>
+                   
+        if('<%= session.getAttribute("username") %>'!='null'){
+        console.log('<%= session.getAttribute("username") %>');
+        console.log('<%= session.getAttribute("userId") %>');
+        console.log('<%= session.getAttribute("is_admin") %>');}
+        else
+            // Redirect to the login page
+            window.location.href = "index.html";
+        
+       
+    </script>
+</body>
+</html>

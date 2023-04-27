@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Court Details</title>
+    <link rel="stylesheet" type="text/css" href="styles.css"> <!-- Link to CSS file for styling -->
+    <script src="scripts.js"></script> <!-- Link to JavaScript file for dynamic functionality -->
+ 
+</head>
+<body>
+    <h1>Court Details</h1>
+    <h2 id="courtName"></h2>
+    <h3 id="message"></h3>
+    <div id="blockUnblock"  class = '<%= session.getAttribute("is_admin") %>' >
+        <ul>
+            <li><a href="#" id="block">Block Court</a></li><br>
+            <li><a href="#" id="unblock" >Unblock Court</a></ul>
+        </ul>
+    </div>
+
+    <h3>Slots:</h3>
+    <ul id="slotsList"></ul>
+
+       
+<br><br>
+
+    <h3>Options:</h3>
+    <ul>
+        <li><a href="dashboard.html">Back to Dashboard</a></li>
+        <li><a href="Logout">Logout</a></li>
+    </ul>
+
+<script>
+    // JavaScript code for dynamically displaying court details and slots
+    // Fetch court name from query parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const courtName = urlParams.get('courtName');
+    document.getElementById('courtName').innerText = 'Court: ' + courtName;
+    console.log(urlParams.get('courtName'));
+    document.getElementById('block').href = 'Block?courtName='+ courtName + '&block=true';
+    document.getElementById('unblock').href = 'Block?courtName='+ courtName + '&block=false';
+
+    // Fetch slots for the court from server and dynamically populate the list
+    fetch(`/sports/getSlots?courtName=` + courtName)
+    .then(response => response.text())
+    .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
+    .then(xmlDoc => {
+        const slotsList = document.getElementById('slotsList');
+        const slots = xmlDoc.getElementsByTagName("slot");
+        for (let i = 0; i < slots.length; i++) {
+            const slotTime = slots[i].getElementsByTagName("slotTime")[0].textContent;
+            const slotStatus = slots[i].getElementsByTagName("slotStatus")[0].textContent;
+            const slotId = slots[i].getAttribute("slotId");
+            const listItem = document.createElement('li');
+            listItem.textContent = slotTime + ' - ' + slotStatus;
+            listItem.setAttribute('data-slot-id', slotId);
+            if(slotStatus == "Available")
+            listItem.addEventListener('click', reserveSlot);
+            slotsList.appendChild(listItem);
+            const br = document.createElement('br');
+            slotsList.appendChild(br);
+        }
+
+        if(slots.length==0){
+        document.getElementById("message").innerText= "Blocked for reservation";
+        document.getElementById("block").style.display="none";
+        }
+        else{
+        document.getElementById("unblock").style.display="none";
+        }
+    });
+    
+    // Function to handle slot reservation
+    function reserveSlot(event) {
+        const slotId = event.target.getAttribute('data-slot-id');
+        const confirmReservation = confirm(`Do you want to reserve slot with ID ` + slotId);
+        if (confirmReservation) {
+            // Fetch API call to reserve the slot on the server
+            // Update the slot status to "Reserved" and handle the response accordingly
+            fetch(`/sports/reserveSlot?slotId=`+ slotId)
+            .then(response => response.text())
+            .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
+            .then(xmlDoc => {
+                console.log(xmlDoc);
+                const success = xmlDoc.getElementsByTagName("success")[0].textContent;
+                if (success === "true") {
+                    console.log("Reserved");
+                    event.target.removeEventListener('click', reserveSlot);
+                    alert(`Slot with ID ${slotId} has been reserved successfully!`);
+                    event.target.textContent = event.target.textContent.slice(0,-9) + ` Reserved`;
+                } else {
+                    const errorMessage = xmlDoc.getElementsByTagName("message")[0].textContent;
+                    alert(`Failed to reserve slot with ID ${slotId}: ${errorMessage}`);
+                }
+            })
+            .catch(error => {
+                console.error(`Failed to reserve slot with ID` + slotId`:` + error);
+            });
+        }
+    }
+</script>    
+</body>
+</html>
