@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Item Details</title>
+    <link rel="stylesheet" type="text/css" href="styles.css"> <!-- Link to CSS file for styling -->
+    <script src="scripts.js"></script> <!-- Link to JavaScript file for dynamic functionality -->
+<style>
+#itemList li{
+    background-color: #50C878;
+    color: white;
+    border-radius: 10px;
+    padding:10px;
+    cursor: pointer;
+}
+
+
+.reserved-bg{
+    
+    background-color: #FF6347 !important;
+}
+</style>
+</head>
+<body>
+    <h1>Item Details</h1>
+    <h2 id="itemName"></h2>
+
+    <ul id="itemList">
+        <li style="background-color:transparent" >
+            <h3>Available:</h3>
+        </li> 
+    </ul>
+
+    <form method="post" action="getCount" id="resItem">
+        <input type="text" name="count" id="count">
+        <input type="hidden" name="itemId" id="itemId" value="">
+        <input type="submit">
+    </form>
+       
+<br><br>
+
+    <h3>Options:</h3>
+    <ul>
+        <li><a href="dashboard.html">Back to Dashboard</a></li>
+        <li><a href="Logout">Logout</a></li>
+    </ul>
+
+<script>
+    // JavaScript code for dynamically displaying item details and Count
+    // Fetch item name from query parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const itemName = urlParams.get('itemName');
+    document.getElementById('itemName').innerText = 'Item: ' + itemName;
+    console.log(urlParams.get('itemName'));
+
+    // Fetch Count for the item from server and dynamically populate the list
+    const tp ='/sports/getCount?itemName=' + itemName;
+    
+    fetch(tp)
+    .then(response => response.text() )
+    .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
+    .then(xmlDoc => 
+        {
+            
+        const itemList = document.getElementById('itemList');
+        const items = xmlDoc.getElementsByTagName("item");
+        for (let i = 0; i < items.length; i++) {
+            const count = items[i].getElementsByTagName("count")[0].textContent; 
+            const itemId = items[i].getElementsByTagName("id")[0].textContent;    
+            const listItem = document.createElement('li');
+            listItem.textContent = count;
+            listItem.setAttribute('data-slot-id', itemId);
+            
+            if(count <= 0)
+            {
+            listItem.classList.toggle('reserved-bg');
+            }
+
+            document.getElementById("itemId").value=itemId;
+            itemList.appendChild(listItem);
+
+
+        }
+    });
+    
+        
+    
+</script>    
+</body>
+</html>

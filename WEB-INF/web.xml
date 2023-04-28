@@ -83,6 +83,15 @@
 <url-pattern>/CancelReservation</url-pattern>
 </servlet-mapping>
 
+<servlet>
+<servlet-name>ItemReservation</servlet-name>
+<servlet-class>ItemReservation</servlet-class>
+</servlet>
+<servlet-mapping>
+<servlet-name>ItemReservation</servlet-name>
+<url-pattern>/getCount</url-pattern>
+</servlet-mapping>
+
 
 <jsp-config>
     <jsp-property-group>

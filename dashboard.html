@@ -16,6 +16,15 @@
         <!-- Add more courts as needed, each with a link to the court details page -->
     </ul>
     </div>
+    <div class= <%= session.getAttribute("is_admin") %> >
+        <h2>Inventory Items:</h2>
+        <ul>
+            <li><a href="itemDetails.html?itemName=bat">bat</a></li>
+            <li><a href="itemDetails.html?itemName=Basketball">Basketball</a></li>
+            <li><a href="itemDetails.html?itemName=Table%20Tennis">Table Tennis</a></li>
+            <!-- Add more courts as needed, each with a link to the item details page -->
+        </ul>
+    </div>
     <div>
     <h2>Options:</h2>
     <ul>

@@ -66,3 +66,10 @@ CREATE TABLE grievances (
   FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
+CREATE TABLE inventory (
+  item_id INT PRIMARY KEY AUTO_INCREMENT,
+  item_name VARCHAR(250),
+  count INT,
+  FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
