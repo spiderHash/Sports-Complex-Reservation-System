@@ -69,7 +69,9 @@ CREATE TABLE grievances (
 CREATE TABLE inventory (
   item_id INT PRIMARY KEY AUTO_INCREMENT,
   item_name VARCHAR(250),
-  count INT,
-  FOREIGN KEY (user_id) REFERENCES users(user_id)
+  count INT
 );
 
+insert into inventory values(1,"Bat",12);
+insert into inventory values(2,"Ball",9);
+insert into inventory values(3,"Racket",14);
