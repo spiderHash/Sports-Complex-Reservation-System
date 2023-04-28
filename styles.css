@@ -108,6 +108,14 @@ li {
     font-size: 1.2em;
 }
 
+#cc{
+    padding:0;
+}
+#cc input{
+    width:100%;
+    background-color: #FF6347;
+}
+
 /* Hide elements with the "false" class */
 .false , .nottrue{
     display: none;

@@ -32,7 +32,7 @@ public class ReservationHistory extends HttpServlet {
             throws ServletException, IOException {
                 PrintWriter out = response.getWriter();
         out.println("<html>");
-        out.println("<head><link rel=\"stylesheet\" type=\"text/css\" href=\"/sports/styles.css\"><title>Reservation History</title></head>");
+        out.println("<head><script src=\"/sports/scripts.js\"></script><link rel=\"stylesheet\" type=\"text/css\" href=\"/sports/styles.css\"><title>Reservation History</title></head>");
         out.println("<body>");
         out.println("<h1>Reservation History</h1>");
 
@@ -44,7 +44,7 @@ public class ReservationHistory extends HttpServlet {
             
             if(is_admin){
             stmt= conn.prepareStatement(
-                "SELECT u.username, c.court_name, s.slot_date, s.slot_start_time, s.slot_end_time " +
+                "SELECT r.reservation_id, u.username, c.court_name, s.slot_date, s.slot_start_time, s.slot_end_time " +
                 "FROM reservations r  " +
                 "JOIN users u ON r.user_id = u.user_id " +
                 "JOIN court_slots s ON r.slot_id = s.slot_id " +
@@ -52,7 +52,7 @@ public class ReservationHistory extends HttpServlet {
                 " ORDER BY s.slot_date DESC, s.slot_start_time DESC");
             }
             else{
-            stmt= conn.prepareStatement( "SELECT u.username, c.court_name, s.slot_date, s.slot_start_time, s.slot_end_time " +
+            stmt= conn.prepareStatement( "SELECT r.reservation_id, u.username, c.court_name, s.slot_date, s.slot_start_time, s.slot_end_time " +
                 "FROM reservations r  " +
                 "JOIN users u ON r.user_id = u.user_id " +
                 "JOIN court_slots s ON r.slot_id = s.slot_id " +
@@ -62,14 +62,19 @@ public class ReservationHistory extends HttpServlet {
             ResultSet rs = stmt.executeQuery();
 
             out.println("<table>");
-            out.println("<tr><th>User</th><th>Court</th><th>Date</th><th>Start Time</th><th>End Time</th></tr>");
+            out.println("<tr><th>R_ID</th><th>User</th><th>Court</th><th>Date</th><th>Start Time</th><th>End Time</th></tr>");
             while (rs.next()) {
+                
+                String reservation_id = rs.getString("reservation_id");
                 String username = rs.getString("username");
                 String courtName = rs.getString("court_name");
                 String date = rs.getString("slot_date");
                 String startTime = rs.getString("slot_start_time");
                 String endTime = rs.getString("slot_end_time");
-                out.println("<tr><td>" + username + "</td><td>" + courtName + "</td><td>" + date + "</td><td>" + startTime + "</td><td>" + endTime + "</td></tr>");
+                out.println("<tr><td>"+reservation_id+"</td><td>" + username + "</td><td>" + courtName + "</td><td>" + date + "</td><td>" + startTime + "</td><td>" + endTime + "</td>");
+                out.println("<td><form id = cc method=\"POST\" action= \"CancelReservation \">"+
+                "<input type=hidden name=\"reservation_id\" id=\"reservation_id\" value=\""+reservation_id+"\">"+
+                "<input type = submit value=\"Cancel\"> </form> </td></tr>");
             }
             out.println("</table>");
 

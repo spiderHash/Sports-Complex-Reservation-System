@@ -74,6 +74,15 @@
 <url-pattern>/Grievance</url-pattern>
 </servlet-mapping>
 
+<servlet>
+<servlet-name>CancelReservation</servlet-name>
+<servlet-class>CancelReservation</servlet-class>
+</servlet>
+<servlet-mapping>
+<servlet-name>CancelReservation</servlet-name>
+<url-pattern>/CancelReservation</url-pattern>
+</servlet-mapping>
+
 
 <jsp-config>
     <jsp-property-group>

@@ -4,7 +4,21 @@
     <title>Court Details</title>
     <link rel="stylesheet" type="text/css" href="styles.css"> <!-- Link to CSS file for styling -->
     <script src="scripts.js"></script> <!-- Link to JavaScript file for dynamic functionality -->
- 
+<style>
+    #slotsList li{
+    background-color: #50C878;
+    color: white;
+    border-radius: 10px;
+    padding:10px;
+    cursor: pointer;
+}
+
+
+.reserved-bg{
+    
+    background-color: #FF6347 !important;
+}
+</style>
 </head>
 <body>
     <h1>Court Details</h1>
@@ -18,6 +32,7 @@
     </div>
 
     <h3>Slots:</h3>
+    <br>
     <ul id="slotsList"></ul>
 
        
@@ -53,8 +68,12 @@
             const listItem = document.createElement('li');
             listItem.textContent = slotTime + ' - ' + slotStatus;
             listItem.setAttribute('data-slot-id', slotId);
+            
             if(slotStatus == "Available")
             listItem.addEventListener('click', reserveSlot);
+            else
+            listItem.classList.toggle('reserved-bg');
+
             slotsList.appendChild(listItem);
             const br = document.createElement('br');
             slotsList.appendChild(br);
@@ -87,6 +106,7 @@
                     event.target.removeEventListener('click', reserveSlot);
                     alert(`Slot with ID ${slotId} has been reserved successfully!`);
                     event.target.textContent = event.target.textContent.slice(0,-9) + ` Reserved`;
+                    event.target.classList.toggle('reserved-bg');
                 } else {
                     const errorMessage = xmlDoc.getElementsByTagName("message")[0].textContent;
                     alert(`Failed to reserve slot with ID ${slotId}: ${errorMessage}`);
